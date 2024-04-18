@@ -8,6 +8,45 @@
 
 ----
 
+Задание #1
+
+Ответ на вопрос "как бы вы организовали процесс тестирования данного раздела":
+1) Проанализировать и разделить раздел на блоки, внутри блоков расписать содержимое.
+2) Тестирование:
+	- Протестировать корректность работы формы поиска с инпутами
+		- пустые значения (в этом случае при нажатии кнопки "Найти" подстветка незаполенных полей);
+		- ввод невалидных значений;
+		- убедиться, что отправляются верные данные (данные можно увидеть в POST запросе или просмотрев результаты поиска);
+		- календарь, кнопки, dropdown'ы и т.д.
+	- Протестировать работу сортировки и фильтров
+		- изменение отображения результатов поиска в зависимости от выбранной сортировки и фильтров 
+		- убедиться, что все фильтры кликабельны и выборочно проверить часть фильтров активировав чек - боксы
+		- обратить внимание на динамическое изменение значение при активации тех или иных чек - боксов 
+		- убедиться, что кнопки работы с фильтрами кликабельны и работают корректно (активация фильтров и сброс)
+		- Показать/Скрыть элемент с фильтрами | кликнуть в пустое место вне фильтра и тд 
+	- Протестировать корректность результатов поиска 
+		- кликабельность всей карточки отеля (при клике ведет на страницу с информацией об отеле)
+		- отображение фото(при наличии) карточки отеля, если нет то заглушка | возможность листать фото 
+		- кликабельность элементов карточки (отзывы, название, избранное, кнопка Выбрать) 
+		- проверить, что информация отображается корректно (например, если есть доступ к источнику данных)
+		- результаты поиска загружаются при скроллинге страницы 
+		- проверить пагинацию (что результаты не повторяются)
+		
+Ответ на вопрос "Обозначьте приоритеты":
+1) Высокий приоритет: 
+	- форма поиска 
+	- получение результатов
+	- переход на страницу выбранного результата
+	- пагинация
+	- сортировка 
+	- фильтры 
+2) Низкий приоритет: 
+	- фото в карточке результата поиска 
+
+Ответ на вопрос "Обоснуйте ваше решение.": 
+Высокий приоритет -- Основная функция страницы это найти отель. Поэтому важно: отправить форму для поиска, получить результаты, перейти к выбранному результату и увидеть все результаты(если их более 25). А еще не менее важно это облегчить поиск сортировкой и фильтром.- 
+Низкий приоритет -- Отсутствие фото немного затруднит поиск, но фото можно посмотреть перейдя на страницу информации отеля. 
+
 Разделы страницы:
 1) форма поиска с инпутами (куда, заезд, выезд, кол - во человек) (прилипает при скролле наверх)
 	1.1) куда (возможность ввода строка)
@@ -16,9 +55,9 @@
 	1.4) кол - во человек 
 		1.4.1) кол - взрослых (кнопки добавить/убрать в виде плюса и минуса ) мин 1 макс 10 
 		1.4.2) добавить детей 
-			1.4.2.1) (дроддовн возраст ребенка [0; 17] 
-			1.4.2.2) удалить запись о ребенке 
-2) сортировки и фильтры (популярные, дешевле, дороже и рейтинг, фильтр по цене и куча других фильтров )
+			1.4.2.1) (dropdown возраст ребенка [0; 17] 
+			1.4.2.2) Крестик напротив записи ребенка (удалить запись о ребенке)
+2) сортировка и фильтры (популярные, дешевле, дороже и рейтинг, фильтр по цене и другие фильтры )
 	2.1) Популярные
 		2.1.1) Популярные (дефолт)
 		2.1.2) Сначала дешевые
@@ -59,4 +98,164 @@
 	3.2) Пагинация если результатов более 25 
 		3.2.1) Назад (неактивна на первой странице)
 		3.2.2) Далее (неактивна на последней странице)
+		
+-----
 
+Задание #2 
+
+Для тестирования выбран этот API https://partner.qatl.ru/api/content/v1/properties
+
+
+Тест №1
+
+Тестовые данные 
+
+count: 1
+include: all
+since: UlUtMTExMQ==
+
+curl --location 'https://partner.qatl.ru/api/content/v1/properties?count=1&include=all&since=UlUtMTExMQ%3D%3D' \
+--header 'X-API-KEY: b600b7c6-984d-4488-ad0c-26849907c65f' \
+--data ''
+
+
+Тест №2 
+
+count: 2
+include: 
+since: UlUtMTExMQ==
+
+curl --location 'https://partner.qatl.ru/api/content/v1/properties?count=2&include=&since=UlUtMTExMQ%3D%3D' \
+--header 'X-API-KEY: b600b7c6-984d-4488-ad0c-26849907c65f' \
+--data ''
+
+
+Тест №3
+
+count: 100
+include: all
+since: 
+
+curl --location 'https://partner.qatl.ru/api/content/v1/properties?count=100&include=all&since=' \
+--header 'X-API-KEY: b600b7c6-984d-4488-ad0c-26849907c65f' \
+--data ''
+
+
+Тест №4
+
+count: 199
+include:
+
+curl --location 'https://partner.qatl.ru/api/content/v1/properties?count=199&include=' \
+--header 'X-API-KEY: b600b7c6-984d-4488-ad0c-26849907c65f' \
+--data ''
+
+
+Тест №5
+
+count: 200
+since: UlUtMTExMQ==
+
+curl --location 'https://partner.qatl.ru/api/content/v1/properties?count=200&since=UlUtMTExMQ%3D%3D' \
+--header 'X-API-KEY: b600b7c6-984d-4488-ad0c-26849907c65f' \
+--data ''
+
+Тест №6
+
+count:
+include: all
+since: UlUtMTExMQ==
+
+curl --location 'https://partner.qatl.ru/api/content/v1/properties?count=&include=all&since=UlUtMTExMQ%3D%3D' \
+--header 'X-API-KEY: b600b7c6-984d-4488-ad0c-26849907c65f' \
+--data ''
+
+Тест №7
+
+count: -1
+since: UlUtMTExMQ==
+
+curl --location 'https://partner.qatl.ru/api/content/v1/properties?count=-1&since=UlUtMTExMQ%3D%3D' \
+--header 'X-API-KEY: b600b7c6-984d-4488-ad0c-26849907c65f' \
+--data ''
+
+Тест №8 
+
+count: 0,5
+include: all
+since: UlUtMTExMQ==
+
+curl --location 'https://partner.qatl.ru/api/content/v1/properties?count=0%2C5&include=all&since=UlUtMTExMQ%3D%3D' \
+--header 'X-API-KEY: b600b7c6-984d-4488-ad0c-26849907c65f' \
+--data ''
+
+Тест №9
+
+count: 201
+include: all
+
+curl --location 'https://partner.qatl.ru/api/content/v1/properties?count=201&include=all' \
+--header 'X-API-KEY: b600b7c6-984d-4488-ad0c-26849907c65f' \
+--data ''
+
+Тест №10
+
+count: 1
+include: hello
+since: UlUtMTExMQ==
+
+curl --location 'https://partner.qatl.ru/api/content/v1/properties?count=1&include=hello&since=UlUtMTExMQ%3D%3D' \
+--header 'X-API-KEY: b600b7c6-984d-4488-ad0c-26849907c65f' \
+--data ''
+
+Тест №11
+
+count: 1
+since: world
+
+curl --location 'https://partner.qatl.ru/api/content/v1/properties?count=1&since=world' \
+--header 'X-API-KEY: b600b7c6-984d-4488-ad0c-26849907c65f' \
+--data ''
+
+Тест №12
+
+curl --location 'https://partner.qatl.ru/api/content/v1/properties' \
+--header 'X-API-KEY: b600b7c6-984d-4488-ad0c-26849907c65f' \
+--data ''
+
+Тест №13
+
+count: null
+include: null
+since: null
+
+curl --location 'https://partner.qatl.ru/api/content/v1/properties?count=null&include=null&since=null' \
+--header 'X-API-KEY: b600b7c6-984d-4488-ad0c-26849907c65f' \
+--data ''
+
+Тест №14
+
+count: 
+include: null
+since: 
+
+curl --location 'https://partner.qatl.ru/api/content/v1/properties?count=&include=null&since=' \
+--header 'X-API-KEY: b600b7c6-984d-4488-ad0c-26849907c65f' \
+--data ''
+
+Тест №15
+
+count: 
+include: 
+since: null
+
+curl --location 'https://partner.qatl.ru/api/content/v1/properties?count=&include=&since=null' \
+--header 'X-API-KEY: b600b7c6-984d-4488-ad0c-26849907c65f' \
+--data ''
+
+В этом кейс получился такой результат, хотя наверно должен отвечать 400
+
+{
+    "properties": [],
+    "warnings": []
+}
